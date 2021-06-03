@@ -59,6 +59,7 @@ input[type="time"] {
 }
 
 .tarea {
+  margin-top: 15px;
   padding: 2rem;
   background: white;
   border-bottom: 1px solid #e1e1e1;

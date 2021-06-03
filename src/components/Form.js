@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import Swal from "sweetalert2";
 
-const Form = () => {
+const Form = ({ createTasks }) => {
   const [task, setTask] = useState({
     name: "",
     surname: "",
@@ -17,7 +17,7 @@ const Form = () => {
     setTask({ ...task, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     //validation
@@ -27,13 +27,38 @@ const Form = () => {
         icon: "error",
         title: "Form is empty!",
         showConfirmButton: false,
-        timer: 1500,
+        timer: 1600,
       });
       return null;
-    }
+    } else {
+      await Swal.fire({
+        title: "CONFIRM",
+        showDenyButton: true,
+        confirmButtonText: `yes`,
+        denyButtonText: `Cancel`,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          Swal.fire({
+            position: "center",
+            icon: "success",
+            title: "Sent!",
+            showConfirmButton: false,
+            timer: 1500,
+          });
 
-    task.id = uuidv4();
-    console.log(task);
+          //only if send was successful we send the task and clear the form
+          task.id = uuidv4();
+          createTasks(task);
+          setTask({
+            name: "",
+            surname: "",
+            date: "",
+            time: "",
+            description: "",
+          });
+        }
+      });
+    }
   };
 
   const { name, surname, date, time, description } = task;
